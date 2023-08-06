@@ -1,3 +1,5 @@
+import { ITeam } from './ITeam';
+
 export interface IMatches {
   id: number;
   homeTeamId: number;
@@ -5,4 +7,6 @@ export interface IMatches {
   awayTeamId: number;
   awayTeamGoals: number;
   inProgress: boolean;
+  homeTeam?: ITeam
+  awayTeam?: ITeam
 }

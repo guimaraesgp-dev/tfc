@@ -1,22 +1,25 @@
-import TeamsModel from '../models/TeamsModel';
-import { ITeam } from '../Interfaces/ITeam';
+import MatchesModel, { MatchesGetByParams } from '../models/MatchesModel';
+import { IMatches } from '../Interfaces';
 
 /**
- * Service da entidade Teams
- * no constructor cria uma instância do model TeamsModel, que é um model abstrato
+ * Service da entidade Match
+ * no constructor cria uma instância do model MatchesModel, que é um model abstrato
  * pra não misturar implementação lógica com abstrata
  */
 
-class TeamsService {
-  private teamsModel: TeamsModel;
+class MatchesService {
+  private matchesModel: MatchesModel;
 
   constructor() {
-    this.teamsModel = new TeamsModel();
+    this.matchesModel = new MatchesModel();
   }
 
-  getAll = async (): Promise<ITeam[] | null> => this.teamsModel.getAll();
+  getAll = async (): Promise<IMatches[] | null> => this.matchesModel.getAll();
 
-  getById = async (id: number): Promise<ITeam | null> => this.teamsModel.getById(id);
+  getById = async (id: number): Promise<IMatches | null> => this.matchesModel.getById(id);
+
+  getBy = async (params: MatchesGetByParams): Promise<IMatches[] | null> =>
+    this.matchesModel.getBy(params);
 }
 
-export default TeamsService;
+export default MatchesService;
