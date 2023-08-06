@@ -1,4 +1,5 @@
-import MatchesModel, { MatchesGetByParams } from '../models/MatchesModel';
+import MatchesModel,
+{ MatchInsertParams, MatchesGetByParams, MatchesUpdateParams } from '../models/MatchesModel';
 import { IMatches } from '../Interfaces';
 
 /**
@@ -20,6 +21,12 @@ class MatchesService {
 
   getBy = async (params: MatchesGetByParams): Promise<IMatches[] | null> =>
     this.matchesModel.getBy(params);
+
+  update = async (params: MatchesUpdateParams): Promise<IMatches | null> =>
+    this.matchesModel.update(params);
+
+  insert = async (params: MatchInsertParams): Promise<IMatches | null> =>
+    this.matchesModel.insert(params);
 }
 
 export default MatchesService;

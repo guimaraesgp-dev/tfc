@@ -1,9 +1,13 @@
 import MatchesModelSequelize from '../database/models/MatchesModelSequelize';
 import { IMatches } from '../Interfaces';
-import { IGetAll, IGetAllResponse, IGetBy, IGetById } from '../Interfaces/IModel';
+import { IGetAll, IGetAllResponse, IGetBy, IGetById, IInsert, IUpdate } from '../Interfaces/IModel';
 
 class MatchesModel implements
-IGetAll<IMatches>, IGetById<IMatches>, IGetBy<IMatches[], MatchesGetByParams> {
+  IGetAll<IMatches>,
+  IGetById<IMatches>,
+  IGetBy<IMatches[], MatchesGetByParams>,
+  IUpdate<IMatches, MatchesUpdateParams>,
+  IInsert<IMatches, MatchInsertParams> {
   private readonly model = MatchesModelSequelize;
 
   getById = async (id: number): Promise<IMatches | null> => this.model.findByPk(id);
@@ -24,10 +28,45 @@ IGetAll<IMatches>, IGetById<IMatches>, IGetBy<IMatches[], MatchesGetByParams> {
 
     return matchesModels;
   };
+
+  update = async (params: MatchesUpdateParams): Promise<IMatches | null> => {
+    const model = await this.model.findByPk(params.id);
+    if (!model) return null;
+
+    if (params.inProgress !== undefined) model.inProgress = params.inProgress;
+    if (params.homeTeamGoals !== undefined) model.homeTeamGoals = params.homeTeamGoals;
+    if (params.awayTeamGoals !== undefined) model.awayTeamGoals = params.awayTeamGoals;
+
+    await model.save();
+    return model;
+  };
+
+  insert = async (params: MatchInsertParams): Promise<IMatches | null> => {
+    const matchModel = new MatchesModelSequelize({
+      ...params,
+      inProgress: true,
+    });
+    await matchModel.save();
+    return matchModel;
+  };
 }
 
 export type MatchesGetByParams = {
   inProgress?: boolean
+};
+
+export type MatchesUpdateParams = {
+  id: number
+  inProgress?: boolean
+  homeTeamGoals?: number,
+  awayTeamGoals?: number
+};
+
+export type MatchInsertParams = {
+  homeTeamId: number
+  awayTeamId: number
+  homeTeamGoals: number,
+  awayTeamGoals: number
 };
 
 export default MatchesModel;

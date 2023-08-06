@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import Token from '../utils/token';
+import { IUserToken } from '../Interfaces/IUserToken';
 
 class ValidationsMiddleware {
   static loginValidation = async (req: Request, res: Response, next: NextFunction):
@@ -22,11 +24,23 @@ class ValidationsMiddleware {
 
   static roleValidation = async (req: Request, res: Response, next: NextFunction):
   Promise<Response | void> => {
-    const { authorization } = req.headers;
+    try {
+      const { authorization } = req.headers;
 
-    if (!authorization) return res.status(401).json({ message: 'Token not found' });
+      if (!authorization) return res.status(401).json({ message: 'Token not found' });
 
-    return next();
+      const token: Token<IUserToken> = new Token();
+
+      const authToken = authorization?.split(' ').at(-1) || '';
+      const userInfo = token.verify(authToken);
+      if (!userInfo) {
+        return res.status(401).send({ message: 'Token must be a valid token' });
+      }
+
+      return next();
+    } catch (e) {
+      return res.status(401).send({ message: 'Token must be a valid token' });
+    }
   };
 }
 
