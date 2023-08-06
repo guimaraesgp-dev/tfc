@@ -24,6 +24,7 @@ class App {
     this.app.use(express.json());
     this.app.use(accessControl);
     this.app.use('/teams', teamsRouter);
+    this.app.use('/login', teamsRouter);
   }
 
   public start(PORT: string | number): void {
