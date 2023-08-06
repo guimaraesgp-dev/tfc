@@ -8,6 +8,21 @@ class TeamsModel implements IGetAll<ITeam>, IGetById<ITeam> {
   getById = async (id: number): Promise<ITeam | null> => this.model.findByPk(id);
 
   getAll = async (): Promise<IGetAllResponse<ITeam>> => this.model.findAll();
+
+  getBy = async (params: TeamsGetByParams): Promise<ITeam[] | null> => {
+    const TeamsModels = await this.model.findAll({
+      where: params,
+      include: {
+        all: true,
+      },
+    });
+
+    return TeamsModels;
+  };
 }
+
+export type TeamsGetByParams = {
+  teamId: number
+};
 
 export default TeamsModel;
